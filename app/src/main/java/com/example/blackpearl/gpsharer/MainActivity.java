@@ -54,12 +54,18 @@ public class MainActivity extends AppCompatActivity {
     SignInButton btngoogle;
     Button btnphone;
 
+
     private static final String TAG = "GoogleActivity";
     private static final int RC_SIGN_IN = 100;
 
     private FirebaseAuth.AuthStateListener mAuthListener;
     private GoogleSignInClient mGoogleSignInClient;
     private FirebaseAuth mAuth;
+
+
+    public static final String SHARED_PREFS = "sharedPrefs";
+    private GoogleApiClient mGoogleApiClient;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -75,14 +81,26 @@ public class MainActivity extends AppCompatActivity {
                 .requestIdToken(getString(R.string.default_web_client_id))
                 .requestEmail()
                 .build();
-
         // Configure sign-in to request the user's ID, email address, and basic
         // profile. ID and basic profile are included in DEFAULT_SIGN_IN.
         mGoogleSignInClient = GoogleSignIn.getClient(this, gso);
 
         onClickGoogleButton();
+
         mAuth = FirebaseAuth.getInstance();
         checkandsignIn();
+
+        /*
+        btnphone.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(MainActivity.this, PhoneNumberActivation.class);
+                startActivity(intent);
+                finish();
+            }
+        });
+        */
+
 
     }
 
@@ -103,6 +121,8 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 signIn();
+
+
             }
         });
     }
@@ -119,21 +139,21 @@ public class MainActivity extends AppCompatActivity {
 
 
         // Result returned from launching the Intent from GoogleSignInApi.getSignInIntent(...);
-        if (requestCode == RC_SIGN_IN ) {
+        if (requestCode == RC_SIGN_IN) {
             Task<GoogleSignInAccount> task = GoogleSignIn.getSignedInAccountFromIntent(data);
             try {
                 // Google Sign In was successful, authenticate with Firebase
                 GoogleSignInAccount account = task.getResult(ApiException.class);
                 firebaseAuthWithGoogle(account);
+
             } catch (ApiException e) {
                 // Google Sign In failed, update UI appropriately
+                Log.w(TAG, "Google sign in failed", e);
                 // ...
-                /*Toast.makeText(this, e.getMessage(), Toast.LENGTH_SHORT).show();*/
-                Toast.makeText(MainActivity.this, "kuch gadbad h!!.", Toast.LENGTH_SHORT).show();
             }
         }
 
-}
+    }
 
     DatabaseReference mDatabaseReference;
     FirebaseDatabase mDatabase;
@@ -153,15 +173,14 @@ public class MainActivity extends AppCompatActivity {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if (task.isSuccessful()) {
-                            /*FirebaseUser user = mAuth.getCurrentUser();
-                            Intent intent = new Intent(getApplicationContext(),Profile.class);
-                            startActivity(intent);*/
+
+                            // updateUI(user);
+
                             checkandsignIn();
                             updateUserData();
                         } else {
                             // If sign in fails, display a message to the user.
                             Log.w(TAG, "signInWithCredential:failure", task.getException());
-                            Toast.makeText(MainActivity.this, "kuch gadbad h!!.", Toast.LENGTH_SHORT).show();
                             //Snackbar.make(findViewById(R.id.), "Authentication Failed.", Snackbar.LENGTH_SHORT).show();
                             //updateUI(null);
                         }
@@ -194,7 +213,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void passInformation() {
 
-        Intent intent = new Intent(MainActivity.this,  MapsActivity2.class);
+        Intent intent = new Intent(MainActivity.this, MapsActivity2.class);
         Bundle b = new Bundle();
         if (mid != null) {
             replacedId = mid.replace("@gmail.com", "");
@@ -239,5 +258,4 @@ public class MainActivity extends AppCompatActivity {
         });
 
     }
-
 }
