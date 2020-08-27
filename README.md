@@ -1,6 +1,9 @@
 # GPSharer-master
 
-GPSharer is an app where you can access your friend's location anytime. GPSharer works with Firebase database on the backend.
+GPSharer is an app where you can access your friend's location anytime. It basically works with Firebase database on the backend.
+
+An android App to give you real time detials about your as well as your friend's location like Longitude, Lattitude ,Altitude,Address,etc.
+Just A basic app to explain the working of Geolocations and maps in Android.
 
  -GPSharer uses google authentication to get user's information.
  
